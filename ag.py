@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import time
 
-def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_rate=0.01, plot_details=False):
+def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_rate=0.01, num_crossover_points=1, plot_details=False):
     """
     Executa a seleção de características usando um Algoritmo Genético (GA) para encontrar o melhor subconjunto de características
     maximamente correlacionadas com uma variável alvo.
@@ -55,11 +55,21 @@ def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_r
         selected = random.choices(population, k=k, weights=fitnesses)
         return max(selected, key=lambda chrom: fitness_function(chrom, data, target))
     
-    # Função de cruzamento de um ponto
-    def one_point_crossover(parent1, parent2):
-        point = random.randint(1, len(parent1) - 1)
-        child1 = np.concatenate((parent1[:point], parent2[point:]))
-        child2 = np.concatenate((parent2[:point], parent1[point:]))
+    # Função de cruzamento de múltiplos pontos
+    def multi_point_crossover(parent1, parent2, num_points):
+        points = sorted(random.sample(range(1, len(parent1)), num_points))
+        child1, child2 = parent1.copy(), parent2.copy()
+        for i in range(len(points)):
+            if i % 2 == 0:
+                if i == len(points) - 1:
+                    child1[points[i]:], child2[points[i]:] = parent2[points[i]:], parent1[points[i]:]
+                else:
+                    child1[points[i]:points[i+1]], child2[points[i]:points[i+1]] = parent2[points[i]:points[i+1]], parent1[points[i]:points[i+1]]
+            else:
+                if i == len(points) - 1:
+                    child1[points[i]:], child2[points[i]:] = parent2[points[i]:], parent1[points[i]:]
+                else:
+                    child1[points[i]:points[i+1]], child2[points[i]:points[i+1]] = parent2[points[i]:points[i+1]], parent1[points[i]:points[i+1]]
         return child1, child2
 
     # Função de mutação
@@ -92,7 +102,7 @@ def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_r
             parent2 = tournament_selection(population, fitnesses)
             
             # Cruzamento
-            child1, child2 = one_point_crossover(parent1, parent2)
+            child1, child2 = multi_point_crossover(parent1, parent2, num_crossover_points)
             
             # Mutação
             child1 = mutate(child1, mutation_rate)
