@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import time
 
-def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_rate=0.01, num_crossover_points=1, plot_details=False):
+def alg_genetico(candidatos, best_result, population_size=50, num_generations=400, mutation_rate=0.01, num_crossover_points=1, plot_details=False):
     """
     Executa a seleção de características usando um Algoritmo Genético (GA) para encontrar o melhor subconjunto de características
     maximamente correlacionadas com uma variável alvo.
@@ -93,6 +93,8 @@ def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_r
         if melhor_fitness_atual > melhor_fitness_geral:
             melhor_fitness_geral = melhor_fitness_atual
             melhor_geracao = generation
+            if(melhor_fitness_atual == best_result):
+                break
         
         # Nova população
         new_population = []
@@ -135,4 +137,4 @@ def alg_genetico(candidatos, population_size=50, num_generations=400, mutation_r
         plt.title('Evolução do Fitness ao Longo das Gerações')
         plt.show()
 
-    return selected_features
+    return (selected_features, melhor_fitness_geral)

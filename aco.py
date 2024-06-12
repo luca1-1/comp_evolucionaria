@@ -87,4 +87,4 @@ def alg_aco(candidatos, population_size=50, num_iterations=400, alpha=1.0, beta=
         plt.title('Evolução do Fitness ao Longo das Iterações')
         plt.show()
 
-    return selected_features
+    return (selected_features, global_best_score)

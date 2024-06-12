@@ -121,4 +121,4 @@ def alg_pso(candidatos, population_size=50, num_iterations=400, inertia_weight=0
         plt.title('Evolução do Fitness ao Longo das Iterações')
         plt.show()
 
-    return selected_features
+    return (selected_features, global_best_score)
